@@ -27,7 +27,7 @@ public class ProduitController {
     public List<ProduitDto> getAll() {
         return produitService.getAllProduits().stream()
                 .map(ProduitMapper::toDto)
-                .collect(toList());
+                .collect(toList());  
     }
 
     @GetMapping("/{id}")

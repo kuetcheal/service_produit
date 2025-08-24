@@ -30,3 +30,18 @@ Cela garantit que seul un client front-end connu peut communiquer avec l’API, 
 
 
 ### eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBTEVYQU5EUkUiLCJpYXQiOjE3NTQ5MDA3NjQsImV4cCI6MTc1NDkwNDM2NCwicm9sZXMiOlsiUk9MRV9VU0VSIl19.KwyUjkks8Amh0e0GEnKR0kgQ95bvJiMqGlMNYiE2BVM
+
+
+### tests unitaires avec Junit 5 et Mockito
+
+- Parfait — on va tester ton ProduitRepository avec un slice JPA.
+
+Ce que les tests vont vérifier
+
+save persiste bien un Produit (et génère id + createdAt via @PrePersist).
+
+findById retrouve l’entité persistée.
+
+findAll renvoie plusieurs lignes.
+
+delete supprime bien l’entité.

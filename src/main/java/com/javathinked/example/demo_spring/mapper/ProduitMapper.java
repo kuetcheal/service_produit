@@ -18,6 +18,7 @@ public class ProduitMapper {
         p.setDescription(dto.getDescription());
         p.setStock(dto.getStock());
         p.setColor(dto.getColor());
+        p.setImageUrl(dto.getImageUrl()); // 👈 ajout
         // createdAt géré automatiquement avec @PrePersist
         return p;
     }
@@ -31,6 +32,7 @@ public class ProduitMapper {
         dto.setDescription(p.getDescription());
         dto.setStock(p.getStock());
         dto.setColor(p.getColor());
+        dto.setImageUrl(p.getImageUrl()); // 👈 ajout
         dto.setCreatedAt(p.getCreatedAt() == null ? null : p.getCreatedAt().format(ISO));
         return dto;
     }

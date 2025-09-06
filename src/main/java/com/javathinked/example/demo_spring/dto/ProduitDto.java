@@ -26,6 +26,9 @@ public class ProduitDto {
     @Size(max = 50)
     private String color;
 
+    @Size(max = 255)
+    private String imageUrl;   // 👈 nouveau champ pour l’image
+
     private String createdAt; // Pour affichage au format ISO dans l'API
 
     // ===== Getters / Setters =====
@@ -47,6 +50,9 @@ public class ProduitDto {
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }

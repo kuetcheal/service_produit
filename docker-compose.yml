@@ -6,7 +6,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: service_produit
     ports:
-      - "3308:3306"             # optionnel: n'expose que si tu veux accéder depuis l'hôte
+      - "3308:3306"
     volumes:
       - mysql_data_produit:/var/lib/mysql
     healthcheck:
@@ -14,22 +14,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-
-  rabbitmq:
-    image: rabbitmq:3.13-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"             # AMQP (les apps)
-      - "15672:15672"           # UI web de RabbitMQ
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-    # (facultatif) tu peux définir ici un user différent de guest
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+    networks: [ms-net]
 
   service_produit:
     build: .
@@ -37,23 +23,27 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/service_produit?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_produit:3306/service_produit?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      JWT_SECRET: "mYmvI1eMKEhT8/LciNCcJqyqSg9XKzTuNNmemn0fAnA="
 
-      # ➜ Connexion RabbitMQ (hostname = "rabbitmq" car même compose)
+      # ---- RabbitMQ partagé (du repo service_client) ----
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
 
       SERVER_PORT: 8080
+      JWT_SECRET: "mYmvI1eMKEhT8/LciNCcJqyqSg9XKzTuNNmemn0fAnA="
     ports:
-      - "8081:8080"
+      - "8083:8080"
+    restart: unless-stopped
+    networks: [ms-net]
 
 volumes:
   mysql_data_produit:
+
+networks:
+  ms-net:
+    external: true

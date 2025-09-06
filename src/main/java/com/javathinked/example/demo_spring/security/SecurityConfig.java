@@ -27,69 +27,53 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            // Active CORS (utilisera le bean corsConfigurationSource ci-dessous)
-            .cors(c -> c.configurationSource(corsConfigurationSource()))
-            // Désactive CSRF pour une API stateless
-            .csrf(csrf -> csrf.disable())
-            // JWT = stateless
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // Règles d'accès
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/**",
-                    "/actuator/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/error"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
-            // Filtre JWT
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+   @Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(c -> c.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/auth/**",
+                "/actuator/**",
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/error"
+            ).permitAll()
 
-        return http.build();
-    }
+            // 👉 OPTION DEV (si pas de token côté front pour l’instant) :
+            .requestMatchers("/api/produits/**").permitAll()
 
-    /**
-     * Configuration CORS pour autoriser ton front Nuxt (dev: http://localhost:3000).
-     * Adapte en prod (ex: https://app.tondomaine.com) ou utilise AllowedOriginPatterns.
-     */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cors = new CorsConfiguration();
+            // Sinon, enlève la ligne au-dessus et laisse:
+            // .requestMatchers("/api/produits/**").authenticated()
 
-        // ORIGINES AUTORISÉES
-        cors.setAllowedOrigins(List.of(
-            "http://localhost:3000"   // Nuxt dev
-            // "https://app.tondomaine.com" // <- à activer/ajouter pour la prod
-        ));
-        // Si tu veux permettre des ports variables en dev :
-        // cors.setAllowedOriginPatterns(List.of("http://localhost:*"));
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // MÉTHODES AUTORISÉES
-        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    return http.build();
+}
 
-        // HEADERS AUTORISÉS (ce que le navigateur peut envoyer)
-        cors.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration cors = new CorsConfiguration();
 
-        // HEADERS EXPOSES (lisibles côté navigateur)
-        cors.setExposedHeaders(List.of("Location", "Authorization"));
+    cors.setAllowedOrigins(List.of(
+        "http://localhost:5173" // 👉 React (Vite)
+       // "http://localhost:3000"  // si tu utilises 3000 aussi
+    ));
+    cors.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
+    cors.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin"));
+    cors.setExposedHeaders(List.of("Location","Authorization"));
+    cors.setAllowCredentials(true);
+    cors.setMaxAge(3600L);
 
-        // Cookies/credentials si besoin (laisse à false si tu n’en utilises pas)
-        cors.setAllowCredentials(true);
-
-        // Cache des préflight (en secondes)
-        cors.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cors);
-        return source;
-    }
-
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", cors);
+    return source;
+}
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

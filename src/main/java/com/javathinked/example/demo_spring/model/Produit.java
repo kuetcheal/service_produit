@@ -1,4 +1,5 @@
 package com.javathinked.example.demo_spring.model;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,17 +16,22 @@ public class Produit {
     private String description;
     private Integer stock;
     private String color;
+
+    @Column(name = "image_url")  // 👈 mapping DB snake_case
+    private String imageUrl;
+
     private LocalDateTime createdAt;
 
     // ====== Constructeurs ======
     public Produit() {}
 
-    public Produit(String name, Float price, String description, Integer stock, String color) {
+    public Produit(String name, Float price, String description, Integer stock, String color, String imageUrl) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
         this.color = color;
+        this.imageUrl = imageUrl;
     }
 
     // ====== Hooks JPA ======
@@ -52,6 +58,9 @@ public class Produit {
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

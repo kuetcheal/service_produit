@@ -59,8 +59,6 @@ public class ProduitController {
         return ResponseEntity.noContent().build();
     }
 
-    // 🔧 Test/usage: met à jour le stock ET publie l'event RabbitMQ
-    // POST http://localhost:8081/api/produits/1/stock?newStock=15
     @PostMapping("/{id}/stock")
     public ResponseEntity<ProduitDto> updateStock(@PathVariable Long id, @RequestParam int newStock) {
         var updated = produitService.updateStock(id, newStock);

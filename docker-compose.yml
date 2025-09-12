@@ -23,12 +23,16 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+
+    env_file:
+      - C:/Users/epsiap/secrets/.env.jwt
+
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_produit:3306/service_produit?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-
-      # ---- RabbitMQ partagé (du repo service_client) ----
+      
+      # 
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
@@ -36,8 +40,16 @@ services:
 
       SERVER_PORT: 8080
       JWT_SECRET: "mYmvI1eMKEhT8/LciNCcJqyqSg9XKzTuNNmemn0fAnA="
+
+      # 👇 IMPORTANT : property Spring file.upload.dir (relaxed binding)
+      FILE_UPLOAD_DIR: /app/uploads
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 10MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 10MB
     ports:
       - "8083:8080"
+    volumes:
+      # 👇 le dossier d’images survivra aux rebuilds et sera servi par /uploads/**
+      - ./uploads:/app/uploads
     restart: unless-stopped
     networks: [ms-net]
 

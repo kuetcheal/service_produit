@@ -27,12 +27,11 @@ public class ProduitDto {
     private String color;
 
     @Size(max = 255)
-    private String imageUrl;   // 👈 nouveau champ pour l’image
+    private String imageUrl;   // URL publique (ou chemin /uploads/...)
 
-    private String createdAt; // Pour affichage au format ISO dans l'API
+    private String createdAt;  // format ISO pour l'API
 
     // ===== Getters / Setters =====
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

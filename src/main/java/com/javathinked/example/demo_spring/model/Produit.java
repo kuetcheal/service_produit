@@ -11,15 +11,23 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 255)
     private String name;
+
     private Float price;
+
+    @Column(length = 255)
     private String description;
+
     private Integer stock;
+
+    @Column(length = 255) // ta table actuelle est en 255 ; OK même si le DTO limite à 50
     private String color;
 
-    @Column(name = "image_url")  // 👈 mapping DB snake_case
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
+    @Column(name = "created_at") // mapping explicite vers la colonne existante
     private LocalDateTime createdAt;
 
     // ====== Constructeurs ======

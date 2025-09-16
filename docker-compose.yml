@@ -17,9 +17,9 @@ services:
     restart: unless-stopped
     networks: [ms-net]
 
-  service-produit:   # ⚠️ doit rester avec le tiret
-    build: .
-    container_name: service-produit   # ⚠️ correspond au target Prometheus
+  service-produit:  
+    image: ghcr.io/kuetcheal/service_produit:${TAG:-develop}
+    container_name: service-produit   #  correspond au target Prometheus
     depends_on:
       mysql-produit:
         condition: service_healthy

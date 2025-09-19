@@ -59,7 +59,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
-        cors.setAllowedOrigins(List.of("http://localhost:5173")); // Front Vite (dev)
+        cors.setAllowedOrigins(List.of("http://localhost:3001", "http://localhost:5173")); // Front React + Vite (dev)
         // ou: cors.setAllowedOriginPatterns(List.of("http://localhost:*"));
         cors.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
         cors.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin","X-Requested-With"));
